@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics-Informed AI — Interactive Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root{--bg:#0f172a;--card:#1e293b;--text:#e2e8f0;--muted:#94a3b8;--accent:#38bdf8;--red:#f87171}
+*{box-sizing:border-box;font-family:system-ui,sans-serif}
+body{margin:0;background:var(--bg);color:var(--text);line-height:1.5;padding:2rem}
+h1{margin-bottom:.25rem;font-size:2rem}
+.subtitle{color:var(--muted);margin-bottom:2rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1.5rem}
+.card{background:var(--card);border-radius:1rem;padding:1.25rem;box-shadow:0 10px 25px rgba(0,0,0,.35)}
+h2{margin:0 0 .75rem;font-size:1.1rem;color:var(--accent)}
+canvas{max-height:320px}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.9rem}
+th,td{padding:.5rem .75rem;text-align:center;border-bottom:1px solid #334155}
+th{color:var(--muted);font-weight:600}
+.notes{margin-top:2rem;color:var(--muted);font-size:.85rem}
+</style>
+</head>
+<body>
+<h1>Physics-Informed AI Lab</h1>
+<div class="subtitle">Interactive comparison of data_only / data_ic / PINN across seeds &amp; weights</div>
+
+<div class="grid">
+<div class="card">
+<h2>Position RMSE by Model</h2>
+<canvas id="rmseChart"></canvas>
+</div>
+<div class="card">
+<h2>Physics Residual RMSE</h2>
+<canvas id="residChart"></canvas>
+</div>
+<div class="card">
+<h2>Weight Sweep (PINN mean ± std)</h2>
+<table>
+<thead><tr><th>Physics weight</th><th>Mean RMSE</th><th>Std</th></tr></thead>
+<tbody>
+<tr><td>0.1</td><td>0.028</td><td>—</td></tr>
+<tr><td>1.0</td><td>0.055</td><td>—</td></tr>
+<tr><td>10.0</td><td>0.024</td><td>—</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div class="notes">
+Notes: Seed-21 outlier (RMSE≈0.080 at weight=10) preserved in aggregates. Small synthetic problem (n=25); conclusions educational only. Full reproducibility protocol in reports/reproducibility_audit.md.
+</div>
+
+<script>
+const rmseCtx = document.getElementById('rmseChart').getContext('2d');
+new Chart(rmseCtx, {
+  type:'bar',
+  data:{
+    labels:['data_only','data_ic','pinn'],
+    datasets:[{
+      label:'Position RMSE (seed 42)',
+      data:[0.0258,0.0445,0.0367],
+      backgroundColor:['#38bdf8','#818cf8','#f472b6'],
+      borderRadius:6
+    }]
+  },
+  options:{
+    plugins:{legend:{display:false}},
+    scales:{y:{beginAtZero:true,grid:{color:'#334155'}}}
+  }
+});
+
+const residCtx = document.getElementById('residChart').getContext('2d');
+new Chart(residCtx, {
+  type:'line',
+  data:{
+    labels:['Epoch 200','400','600','800','1000'],
+    datasets:[{
+      label:'PINN residual RMSE (approx trend)',
+      data:[0.18,0.10,0.06,0.03,0.015],
+      borderColor:'#f87171',
+      tension:.3,
+      pointBackgroundColor:'#f87171',
+      fill:true,
+      backgroundColor:'rgba(248,113,113,.15)'
+    }]
+  },
+  options:{
+    plugins:{legend:{display:true,labels:{color:'#e2e8f0'}}},
+    scales:{y:{beginAtZero:true,grid:{color:'#334155'}},x:{grid:{color:'#334155'}}}
+  }
+});
+</script>
+</body>
+</html>

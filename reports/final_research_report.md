@@ -190,3 +190,4 @@ This is an educational portfolio project. The governing equation (`x'' + omega^2
 ---
 
 *Report generated from verified CSV outputs (`reports/`, `reports/diagnostics/`, `reports/figures/`) and executed code (`scripts/diagnostic_run.py`, `scripts/run_experiment.py`). No fabricated metrics or citations.*
+Note: std = np.std(ddof=0) (population standard deviation)
