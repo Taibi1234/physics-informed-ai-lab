@@ -33,3 +33,8 @@ __pycache__/
 /reports/experiment_logs/predictions_before_tests.png
 /reports/experiment_logs/results_before_tests.csv
 /reports/experiment_logs/results_pre_new_experiment.csv
+
+# Temporary experiment outputs
+/reports/experiment_logs/predictions_before_tests.png
+/reports/experiment_logs/results_before_tests.csv
+/reports/experiment_logs/results_pre_new_experiment.csv
