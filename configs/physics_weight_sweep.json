@@ -1,0 +1,29 @@
+{
+  "experiment_name": "physics_weight_sensitivity",
+  "date": "2026-10-14",
+  "model_family": "PINN",
+  "description": "Investigate how physics-loss weight affects position RMSE and physics residual RMSE across 5 random seeds.",
+  "common_settings": {
+    "n_observations": 25,
+    "noise_std": 0.05,
+    "epochs": 1000,
+    "omega": 1.0,
+    "ic_weight": 10.0,
+    "hidden_width": 64,
+    "hidden_layers": 3,
+    "optimizer": "Adam",
+    "learning_rate": 0.001,
+    "collocation_points": 256,
+    "seed_protocol": [1, 7, 21, 42, 123],
+    "cpu_threads": 1
+  },
+  "sweep_settings": {
+    "physics_weights": [0.1, 1.0, 10.0],
+    "variable": "physics_weight"
+  },
+  "outputs": [
+    "reports/weight_sweep/all_weight_results.csv",
+    "reports/weight_sweep/pinn_weight_summary.csv"
+  ],
+  "notes": "Historical sweep preserved. New experiments should write to versioned files rather than overwrite."
+}

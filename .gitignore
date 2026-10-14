@@ -1,0 +1,30 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.env
+.env.*
+!.env.example
+.vscode/
+.idea/
+
+# Generated package metadata
+*.egg-info/
+
+# Local AI tooling and personal configuration
+/HOME/
+
+# Generated Python package metadata
+*.egg-info/
+
+# Generated Python package metadata and local caches
+*.egg-info/
+.pytest_cache/
+.venv/
+__pycache__/
+
+# Local backup files
+*.bak
+
+# Experiment and diagnostic logs
+*.log
