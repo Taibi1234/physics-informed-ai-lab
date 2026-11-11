@@ -1,18 +1,21 @@
-# Phase 4 — Damped Harmonic Oscillator (Smoke Test Only)
+# Damped Harmonic Oscillator Study
 
-**Status:** SMOKE TEST COMPLETED — FULL EXPERIMENT NOT PERFORMED.
+## Status
 
-This directory contains a controlled, small-scale verification only. It does NOT contain full PINN training results, multi-seed comparisons, or aggregate statistics. Those remain future work.
+Completed controlled experiment with five seeds, three model variants,
+analytical and numerical verification, raw predictions, aggregate metrics,
+and generated figures.
 
-## What was done
-- Derived analytical solution independently (`reports/advanced_damped_oscillator/derivation.md`).
-- Verified `x(0) = 1` (numerical check in smoke script, `np.isclose`).
-- Generated reference plot (`damped_reference_plot.png`) for `zeta=0.2`, `omega=1.0`.
-- Created smoke-test script (`scripts/damped_smoke_test.py`) that runs quickly (`< 5 s`) and produces verifiable output.
+## Research question
 
-## What was NOT done (intentionally preserved as future work)
-- PINN training for damped system (requires new residual definition including velocity term).
-- Multi-seed comparison (`data_only`, `data_ic`, `pinn`) for damped system.
-- Varying `zeta`, noise, or observation count for damped case.
-- Aggregate tables or final-report sections for damped results.
-- No fabricated results or plots exist in this directory. The plot is derived directly from the independently verified analytical formula.
+How do data-only, initial-condition-constrained, and physics-informed neural
+networks compare on an underdamped harmonic oscillator with sparse noisy
+observations?
+
+## Governing equation
+
+```text
+x''(t) + 2*zeta*omega*x'(t) + omega^2*x(t) = 0
+x(0) = 1
+x'(0) = 0
+0 &lt; zeta &lt; 1

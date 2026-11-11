@@ -1,0 +1,27 @@
+{
+  "equation": "x'' + 2*zeta*omega*x' + omega^2*x = 0",
+  "initial_conditions": {
+    "x0": 1.0,
+    "v0": 0.0
+  },
+  "t_max": 12.566370614359172,
+  "reference_solver_max_abs_error": 3.134079384903288e-10,
+  "std_convention": "population standard deviation (ddof=0)",
+  "settings": {
+    "epochs": 1000,
+    "n_observations": 25,
+    "noise_std": 0.05,
+    "seeds": [
+      1,
+      7,
+      21,
+      42,
+      123
+    ],
+    "omega": 1.0,
+    "zeta": 0.2,
+    "physics_weight": 1.0,
+    "ic_weight": 10.0,
+    "n_collocation": 256
+  }
+}
