@@ -1,7 +1,7 @@
 # Final Quality Gate — Physics-Informed AI Lab
 
 **Date:** 2026-10-14
-**Auditor:** Claude (independent verification)
+**Review type:** Repository verification
 **Scope:** Verify every claim from the previous completion report against actual files, commands, and outputs. No new experiments launched; only reproduction, inspection, and consistency checks.
 
 ---

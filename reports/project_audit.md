@@ -1,7 +1,7 @@
 # Project Audit — Physics-Informed AI Lab
 
 Date: 2026-10-14
-Auditor: Claude (automated assistant)
+Review type: Repository verification
 
 ## Repository status
 - Not a Git repository (no `.git`). Previous uncommitted work noted.
