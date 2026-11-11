@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f9fb">
+  <meta name="description" content="Explore 15 real physics-informed neural network runs: trajectory predictions, position error, equation residuals, and physics-weight sensitivity.">
+  <title>Physics-Informed AI Lab — Experiment Explorer</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23363e40'/%3E%3Cpath d='M8 34c8-28 16 28 24 0s16 28 24 0' fill='none' stroke='%23ffca34' stroke-width='5'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Rubik:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="Physics-Informed AI Lab, back to top">
+      <svg class="brand-mark" viewBox="0 0 44 28" aria-hidden="true">
+        <path d="M2 15C7 0 12 30 17 15S27 0 32 15 37 30 42 15" fill="none" stroke="currentColor" stroke-width="2.5"/>
+      </svg>
+      <span>PHYSICS / AI LAB</span>
+    </a>
+    <nav class="main-nav" aria-label="Main navigation">
+      <a href="#explorer">Explorer</a>
+      <a href="#findings">Findings</a>
+      <a href="#methods">Methods</a>
+      <a href="#limitations">Limitations</a>
+    </nav>
+    <a class="repo-link" href="https://github.com/Taibi1234/physics-informed-ai-lab" target="_blank" rel="noopener noreferrer">
+      GitHub <span aria-hidden="true">↗</span>
+    </a>
+  </header>
+
+  <main id="main-content">
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow">REPRODUCIBLE SCIENTIFIC MACHINE LEARNING</p>
+        <h1 id="hero-title">When physics enters the loss, <em>what changes?</em></h1>
+        <p class="hero-intro">A controlled comparison of data-driven, initial-condition-constrained, and physics-informed neural networks—built around harmonic oscillators and preserved experimental evidence.</p>
+        <div class="hero-actions">
+          <a class="primary-action" href="#explorer">Explore 15 runs <span aria-hidden="true">↓</span></a>
+          <a class="text-link" href="https://github.com/Taibi1234/physics-informed-ai-lab/blob/main/reports/final_research_report.md" target="_blank" rel="noopener noreferrer">Read the research report <span aria-hidden="true">↗</span></a>
+        </div>
+        <p class="version-line"><span>v1.0.0</span><span>PyTorch</span><span>19 tests</span><span>MIT license</span></p>
+      </div>
+      <div class="hero-figure" aria-label="Analytical solution of the underdamped harmonic oscillator">
+        <span class="hero-watermark" aria-hidden="true">4π</span>
+        <div class="hero-figure-head">
+          <span>UNDERDAMPED OSCILLATOR</span>
+          <span>ω = 1.0&nbsp;&nbsp; ζ = 0.2</span>
+        </div>
+        <div id="hero-chart" class="hero-chart">
+          <div class="chart-loading">Loading recorded reference…</div>
+        </div>
+        <p class="equation">x″ + 2ζωx′ + ω²x = 0</p>
+        <div class="hero-figure-foot"><span>x(0) = 1</span><span>x′(0) = 0</span><span>0 &lt; ζ &lt; 1</span></div>
+      </div>
+    </section>
+
+    <section class="explorer-section" id="explorer" aria-labelledby="explorer-title">
+      <div class="section-heading explorer-heading">
+        <div>
+          <p class="section-index">01 / EXPERIMENT EXPLORER</p>
+          <h2 id="explorer-title">Inspect the runs, not just the averages.</h2>
+        </div>
+        <p>Five seeds. Three loss variants. One shared architecture and observation set per seed. Every curve and metric below comes from the preserved damped-study artifacts.</p>
+      </div>
+
+      <div class="data-message" id="data-loading" role="status">
+        <span class="loading-dot" aria-hidden="true"></span> Loading validated experiment data…
+      </div>
+      <div class="data-message data-error" id="data-error" role="alert" hidden>
+        <div><strong>Experiment data could not be loaded.</strong><br>Serve the site over HTTP rather than opening the HTML file directly, then try again.</div>
+        <button id="retry-data" type="button">Retry</button>
+      </div>
+
+      <div class="explorer-shell" id="explorer-shell" hidden>
+        <div class="explorer-grid">
+          <aside class="control-panel" aria-label="Experiment controls">
+            <div class="control-group">
+              <div class="control-label">01 — SELECT SEED</div>
+              <div class="seed-controls" id="seed-controls" aria-label="Random seed"></div>
+              <p class="control-help">Each seed changes initialization, observations, and collocation sampling.</p>
+            </div>
+            <div class="control-group">
+              <div class="control-label">02 — MODEL VARIANTS</div>
+              <div class="model-controls" id="model-controls">
+                <button class="model-toggle" type="button" data-mode="data_only" aria-pressed="true">
+                  <span class="series-key series-data"></span><span><strong>Data only</strong><small>Observational loss</small></span><span class="toggle-state">ON</span>
+                </button>
+                <button class="model-toggle" type="button" data-mode="data_ic" aria-pressed="true">
+                  <span class="series-key series-ic"></span><span><strong>Data + IC</strong><small>Initial-condition penalty</small></span><span class="toggle-state">ON</span>
+                </button>
+                <button class="model-toggle" type="button" data-mode="pinn" aria-pressed="true">
+                  <span class="series-key series-pinn"></span><span><strong>PINN</strong><small>IC + equation residual</small></span><span class="toggle-state">ON</span>
+                </button>
+              </div>
+            </div>
+            <div class="control-group compact-controls">
+              <button class="small-toggle" id="exact-toggle" type="button" aria-pressed="true"><span class="reference-key"></span>Analytical solution<span class="toggle-state">ON</span></button>
+              <button class="reset-button" id="reset-explorer" type="button">Reset explorer</button>
+            </div>
+          </aside>
+
+          <div class="chart-panel">
+            <div class="chart-toolbar">
+              <div>
+                <p class="chart-kicker" id="run-label">DAMPED STUDY / SEED 42</p>
+                <h3 id="trajectory-title">Position over time</h3>
+              </div>
+              <div class="segmented-control" aria-label="Chart view">
+                <button type="button" id="view-trajectory" aria-pressed="true">Trajectory</button>
+                <button type="button" id="view-error" aria-pressed="false">Absolute error</button>
+              </div>
+            </div>
+            <div class="chart-wrap" id="trajectory-wrap">
+              <svg id="trajectory-chart" class="data-chart" viewBox="0 0 900 430" role="img" aria-labelledby="trajectory-title trajectory-desc"></svg>
+              <p class="sr-only" id="trajectory-desc">Predicted model trajectories compared with the analytical position solution. Use the time slider to inspect values.</p>
+              <div class="chart-tooltip" id="trajectory-tooltip" hidden></div>
+            </div>
+            <div class="time-inspector">
+              <label for="time-scrubber">Inspect time</label>
+              <input id="time-scrubber" type="range" min="0" max="999" value="0" step="1">
+              <output id="time-output" for="time-scrubber">t = 0.000</output>
+            </div>
+            <div class="chart-footer">
+              <p id="chart-caption">Solid colored lines are model predictions. The dashed line is the analytical reference.</p>
+              <button class="download-button" id="download-run" type="button">Download shown data <span aria-hidden="true">↓</span></button>
+            </div>
+          </div>
+
+          <aside class="metric-panel" aria-labelledby="metric-title">
+            <div class="control-label" id="metric-title">RUN METRICS</div>
+            <p class="metric-seed" id="metric-seed">Seed 42</p>
+            <div id="run-metrics"></div>
+            <div class="metric-note"><strong>Lower is better.</strong> Final total losses are intentionally omitted: the variants optimize different loss terms, so those totals are not directly comparable.</div>
+          </aside>
+        </div>
+
+        <div class="aggregate-block" id="findings">
+          <div class="aggregate-copy">
+            <p class="section-index">02 / FIVE-SEED COMPARISON</p>
+            <h3>The two objectives diverge.</h3>
+            <p>The data-only model produced the lowest mean position error. The PINN produced the lowest mean equation residual. Physical consistency and trajectory accuracy must therefore be reported separately.</p>
+            <div class="finding-pair">
+              <div><span>LOWEST POSITION RMSE</span><strong id="best-position-value">—</strong><small>Data only · 5-run mean</small></div>
+              <div><span>LOWEST RESIDUAL RMSE</span><strong id="best-residual-value">—</strong><small>PINN · 5-run mean</small></div>
+            </div>
+          </div>
+          <div class="aggregate-visual">
+            <div class="chart-toolbar">
+              <div><p class="chart-kicker">AGGREGATE METRICS</p><h3 id="aggregate-title">Mean error by model</h3></div>
+              <div class="segmented-control" aria-label="Aggregate metric">
+                <button type="button" id="aggregate-position" aria-pressed="true">Position</button>
+                <button type="button" id="aggregate-residual" aria-pressed="false">Residual</button>
+              </div>
+            </div>
+            <svg id="aggregate-chart" class="data-chart aggregate-chart" viewBox="0 0 720 340" role="img" aria-labelledby="aggregate-title aggregate-desc"></svg>
+            <p class="sr-only" id="aggregate-desc">Horizontal bars compare five-run mean position or physics-residual RMSE for the three model variants.</p>
+            <div id="aggregate-table" class="sr-only"></div>
+          </div>
+        </div>
+      </div>
+      <noscript><p class="data-message data-error">JavaScript is required for the interactive explorer. The full numerical results remain available in the repository report.</p></noscript>
+    </section>
+
+    <section class="weight-section" aria-labelledby="weight-title">
+      <div class="section-heading">
+        <div><p class="section-index">03 / PHYSICS-WEIGHT SENSITIVITY</p><h2 id="weight-title">Stronger physics changes the trade-off.</h2></div>
+        <p>In the separate undamped study, increasing the physics-loss weight reduced mean equation residual. It did not create a universal winner, and variability remained important.</p>
+      </div>
+      <div class="weight-grid" id="weight-grid" hidden>
+        <div class="weight-chart-panel">
+          <div class="chart-toolbar">
+            <div><p class="chart-kicker">UNDAMPED STUDY / 5 SEEDS PER SETTING</p><h3 id="weight-chart-title">Position RMSE vs. physics weight</h3></div>
+            <div class="segmented-control" aria-label="Weight-study metric">
+              <button type="button" id="weight-position" aria-pressed="true">Position</button>
+              <button type="button" id="weight-residual" aria-pressed="false">Residual</button>
+            </div>
+          </div>
+          <svg id="weight-chart" class="data-chart" viewBox="0 0 820 380" role="img" aria-labelledby="weight-chart-title weight-desc"></svg>
+          <p class="sr-only" id="weight-desc">Line chart with population-standard-deviation error bars for three physics weights in the undamped PINN study.</p>
+          <div class="weight-values" id="weight-values"></div>
+        </div>
+        <aside class="weight-note">
+          <span class="note-number">λ = 10.0</span>
+          <h3>Low residual.<br>Higher variability.</h3>
+          <p>At physics weight 10.0, the undamped PINN recorded the lowest mean residual RMSE (<strong id="weight-ten-residual">—</strong>) but the highest position-RMSE population standard deviation (<strong id="weight-ten-std">—</strong>).</p>
+          <p>The seed-21 optimization outlier remains in the aggregates. It is evidence about optimization behavior, not a point to silently remove.</p>
+          <a class="text-link" href="https://github.com/Taibi1234/physics-informed-ai-lab/blob/main/reports/diagnostics/seed21_analysis.md" target="_blank" rel="noopener noreferrer">Read the seed-21 diagnostic <span aria-hidden="true">↗</span></a>
+        </aside>
+      </div>
+    </section>
+
+    <section class="methods-section" id="methods" aria-labelledby="methods-title">
+      <div class="section-heading">
+        <div><p class="section-index">04 / CONTROLLED METHOD</p><h2 id="methods-title">Same problem. Different constraints.</h2></div>
+        <p>The comparison isolates loss design by holding the network, observations, training budget, and evaluation grid constant within each damped-study seed.</p>
+      </div>
+      <div class="method-layout">
+        <div class="loss-list">
+          <article class="loss-row"><span class="loss-name"><i class="series-key series-data"></i>DATA ONLY</span><p>Fit the 25 noisy position observations.</p><code>L = L<sub>data</sub></code></article>
+          <article class="loss-row"><span class="loss-name"><i class="series-key series-ic"></i>DATA + IC</span><p>Add penalties for initial position and velocity.</p><code>L = L<sub>data</sub> + 10L<sub>IC</sub></code></article>
+          <article class="loss-row"><span class="loss-name"><i class="series-key series-pinn"></i>PINN</span><p>Add the differentiable damped-equation residual at 256 collocation points.</p><code>L = L<sub>data</sub> + 10L<sub>IC</sub> + L<sub>physics</sub></code></article>
+        </div>
+        <div class="protocol">
+          <div class="protocol-head"><span>EXPERIMENT PROTOCOL</span><span>v1.0.0</span></div>
+          <dl>
+            <div><dt>Architecture</dt><dd>3-layer, 64-unit Tanh MLP</dd></div>
+            <div><dt>Training</dt><dd>Adam · 1,000 epochs</dd></div>
+            <div><dt>Observations</dt><dd>25 · noise σ = 0.05</dd></div>
+            <div><dt>Time domain</dt><dd>[0, 4π] · 1,000-point evaluation</dd></div>
+            <div><dt>Seeds</dt><dd>1, 7, 21, 42, 123</dd></div>
+            <div><dt>References</dt><dd>Analytical + independent SciPy solver</dd></div>
+          </dl>
+          <div class="solver-check"><span>REFERENCE SOLVER MAX. ABS. ERROR</span><strong id="solver-error">—</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="limitations-section" id="limitations" aria-labelledby="limitations-title">
+      <div class="limitations-title-wrap"><p class="section-index">05 / READ BEFORE GENERALIZING</p><h2 id="limitations-title">What these results do—and do not—show.</h2></div>
+      <div class="limitations-list">
+        <details open><summary>Small synthetic scope <span aria-hidden="true">+</span></summary><p>These are controlled educational experiments on harmonic oscillators, not benchmarks across complex physical systems. Five seeds support descriptive summaries, not claims of statistical significance.</p></details>
+        <details><summary>Different metrics answer different questions <span aria-hidden="true">+</span></summary><p>Position RMSE measures trajectory accuracy against the reference. Physics-residual RMSE measures equation satisfaction. A model can improve one without improving the other.</p></details>
+        <details><summary>Optimization remains part of the result <span aria-hidden="true">+</span></summary><p>The fixed architecture and Adam configuration do not represent every possible training strategy. Outliers and population standard deviations are preserved to make run-to-run variability visible.</p></details>
+        <details><summary>Reproduction is public <span aria-hidden="true">+</span></summary><p>Raw metrics, dense predictions, configurations, mathematical verification, and training scripts are preserved in the repository. The website is a view of those artifacts, not an independent result source.</p></details>
+      </div>
+      <a class="text-link limitation-link" href="https://github.com/Taibi1234/physics-informed-ai-lab/blob/main/reports/limitations.md" target="_blank" rel="noopener noreferrer">Full limitations document <span aria-hidden="true">↗</span></a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div><a class="brand footer-brand" href="#top"><svg class="brand-mark" viewBox="0 0 44 28" aria-hidden="true"><path d="M2 15C7 0 12 30 17 15S27 0 32 15 37 30 42 15" fill="none" stroke="currentColor" stroke-width="2.5"/></svg><span>PHYSICS / AI LAB</span></a><p>Reproducible scientific machine learning by Nourddine Taibi.</p></div>
+    <div class="footer-links"><a href="https://github.com/Taibi1234/physics-informed-ai-lab" target="_blank" rel="noopener noreferrer">Repository ↗</a><a href="https://github.com/Taibi1234/physics-informed-ai-lab/blob/main/reports/final_research_report.md" target="_blank" rel="noopener noreferrer">Research report ↗</a><a href="https://github.com/Taibi1234/physics-informed-ai-lab/releases/tag/v1.0.0" target="_blank" rel="noopener noreferrer">v1.0.0 release ↗</a><a href="https://github.com/Taibi1234/physics-informed-ai-lab/tree/main/reports/advanced_damped_oscillator" target="_blank" rel="noopener noreferrer">Source artifacts ↗</a></div>
+    <p class="footer-note">Static site · No backend · Real recorded results</p>
+  </footer>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
