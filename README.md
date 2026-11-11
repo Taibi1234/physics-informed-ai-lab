@@ -1,86 +1,112 @@
 # Physics-Informed AI Lab
 
-A reproducible educational research experiment comparing data-driven and physics-informed neural networks on the harmonic oscillator.
+[![Tests](https://github.com/Taibi1234/physics-informed-ai-lab/actions/workflows/tests.yml/badge.svg)](https://github.com/Taibi1234/physics-informed-ai-lab/actions/workflows/tests.yml)
+![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-blue)
+![PyTorch](https://img.shields.io/badge/PyTorch-2.2%2B-orange)
+![License: MIT](https://img.shields.io/badge/License-MIT-green)
 
-## Quick start (Windows PowerShell)
+**A reproducible scientific machine-learning project comparing data-driven,
+initial-condition-constrained, and physics-informed neural networks on
+undamped and underdamped harmonic oscillators.**
 
-```powershell
-# Activate or use directly:
-.\.venv\Scripts\python.exe -m pytest tests/
-.\.venv\Scripts\python.exe .\scripts\run_experiment.py --epochs 1000 --n-observations 25 --noise-std 0.05 --seed 42
-```
+The project combines analytical mathematics, independent numerical solvers,
+controlled neural-network training, multi-seed experiments, sensitivity
+analysis, optimization diagnostics, and preserved research artifacts.
 
-## Mathematical problem
+**[Read the final research report](reports/final_research_report.md)**
 
-Undamped harmonic oscillator (`omega=1`): `x''(t) + x(t) = 0`, `x(0)=1`, `x'(0)=0`.
-Analytical solution: `x(t) = cos(t)`. Numerical reference: `scipy.integrate.solve_ivp` (verified agreement `<1e-6`).
+![Damped oscillator model comparison](reports/advanced_damped_oscillator/damped_model_comparison.png)
 
-## Architecture
+## Research questions
 
-Single MLP (`hidden_width=64`, `hidden_layers=3`, `tanh`). Same architecture for all three model categories (`data_only`, `data_ic`, `pinn`).
+- Do physics-informed constraints improve trajectory prediction relative to
+  data-only training?
+- How does physics-loss weighting affect position error, equation residual,
+  and optimization variability?
+- Can a controlled experiment remain reproducible when extended from an
+  undamped oscillator to an underdamped oscillator with a velocity-dependent
+  residual?
 
-## Directory structure
+## Key findings
 
-```
-physics-informed-ai/
-├── README.md                 # This file
-├── pyproject.toml             # Dependencies and build config
-├── src/physics_ai/            # Core modules (equations, data, models, numerical_solver)
+### Undamped oscillator
+
+- PINN training reduced equation residuals, but no tested physics weight
+  dominated both position accuracy and physical consistency.
+- Physics weight `10.0` achieved the lowest mean residual RMSE (`0.0297`) but
+  the highest position-RMSE variability (`std=0.0313`).
+- The seed-21 optimization outlier was preserved and investigated rather than
+  removed from aggregate results.
+
+### Underdamped oscillator
+
+Five seeds, three model variants, and 15 controlled training runs:
+
+| Model | Mean position RMSE | RMSE std. | Mean position MAE | Mean residual RMSE |
+|---|---:|---:|---:|---:|
+| `data_only` | **0.0762** | 0.0179 | **0.0612** | 0.1906 |
+| `data_ic` | 0.1414 | 0.0188 | 0.1154 | 0.1514 |
+| `pinn` | 0.1158 | **0.0150** | 0.0921 | **0.0780** |
+
+The data-only model achieved the best trajectory accuracy, while the PINN
+achieved the best physical consistency. Lower equation residual therefore did
+not automatically imply lower position-prediction error.
+
+These are descriptive results from small synthetic experiments, not evidence
+of statistical significance or universal model rankings.
+
+## Implemented capabilities
+
+### Mathematical verification
+
+- Undamped and underdamped analytical solutions
+- Independent SciPy numerical reference solvers
+- First- and second-order automatic differentiation
+- Initial-position and initial-velocity verification
+- Numerical-versus-analytical agreement tests
+- Damped numerical reference error: `3.134079384903288e-10`
+
+### Controlled model comparison
+
+- Shared three-layer, 64-unit Tanh MLP
+- `data_only`, `data_ic`, and `pinn` loss variants
+- Seeded model initialization and observation generation
+- Seeded collocation resampling
+- Position RMSE, MAE, and physics-residual RMSE
+- Population standard deviations across five seeds
+
+### Research engineering
+
+- Preserved historical weight-sweep results
+- Component-level optimization-outlier diagnostics
+- Raw per-run metrics and dense-grid predictions
+- Machine-readable experiment configuration
+- Automatically generated figures
+- 19 automated tests and GitHub Actions CI
+- Full research report and explicit limitations
+
+## Project structure
+
+```text
+physics-informed-ai-lab/
+├── src/physics_ai/
+│   ├── data.py                  # Undamped and damped observations
+│   ├── equations.py             # Analytical solutions and PINN residuals
+│   ├── models.py                # Shared MLP architecture
+│   └── numerical_solver.py      # Independent SciPy references
 ├── scripts/
-│   ├── run_experiment.py      # Main experiment entry point
-│   ├── diagnostic_run.py      # Component-wise diagnostic for outlier seeds
-│   ├── reproducibility_experiment.py  # Multi-seed reproducibility pipeline
+│   ├── run_experiment.py        # Undamped baseline
+│   ├── reproducibility_experiment.py
+│   ├── diagnostic_run.py        # Seed-outlier investigation
+│   ├── damped_experiment.py     # Five-seed damped comparison
 │   └── generate_summary_figures.py
-├── tests/                     # Automated tests (equations, models, extended)
-├── configs/                   # Reproducible experiment configurations (JSON)
+├── tests/                       # 19 mathematical and reproducibility tests
+├── configs/                     # Preserved experiment settings
 ├── reports/
-│   ├── results.csv
-│   ├── predictions.csv
+│   ├── final_research_report.md
+│   ├── limitations.md
+│   ├── diagnostics/
+│   ├── weight_sweep/
 │   ├── figures/
-│   ├── diagnostics/           # Seed-21 outlier investigation
-│   ├── weight_sweep/          # Historical weight-sensitivity results (preserved)
-│   └── experiment_logs/       # Backups of original CSV outputs
-```
-
-## Reproducing key experiments
-
-**Baseline:**
-```powershell
-.\.venv\Scripts\python.exe .\scripts\run_experiment.py --epochs 1000 --seed 42
-```
-
-**Weight sweep (historical, preserved):**
-Results already in `reports/weight_sweep/all_weight_results.csv`.
-
-**Seed-21 outlier diagnostic:**
-```powershell
-.\.venv\Scripts\python.exe .\scripts\diagnostic_run.py --seed 21 --physics-weight 10.0
-```
-
-**Reproducibility across seeds:**
-```powershell
-.\.venv\Scripts\python.exe .\scripts\reproducibility_experiment.py --seeds 1 7 21 42 123 --physics-weight 10.0
-```
-
-**Tests:**
-```powershell
-.\.venv\Scripts\python.exe -m pytest tests/
-```
-
-## Key verified results
-
-- Governing equation verified; numerical reference agrees with analytical (`cos t`) within `~1e-9`.
-- Existing baseline (`seed 42`) reproduced: `data_only RMSE=0.0258`, `data_ic RMSE=0.0445`, `pinn RMSE=0.0367`.
-- Weight sweep (`0.1`, `1.0`, `10.0`) preserved; PINN mean position RMSE: `0.028`, `0.055`, `0.024` (mean ± std over 5 seeds).
-- Seed 21 (`physics_weight=10.0`) is a genuine optimization outlier (`RMSE=0.080`); it is retained in all aggregates. Diagnostic reports and prediction plots are in `reports/diagnostics/`.
-
-## Limitations
-
-- Small synthetic problem (`n=25` observations) — conclusions do not generalize to complex real-world dynamics.
-- Only 5 random seeds per condition; no formal statistical significance testing performed.
-- CPU-only; no GPU determinism verification.
-- No adaptive sampling or gradient clipping added; optimization stability relies solely on Adam (`lr=1e-3`).
-
-## References
-
-This is an educational portfolio project. No external publication claims are made. The governing equation and PINN formulation are standard in physics-informed machine learning literature (see, e.g., Raissi et al., 2019, for PINN concepts).
+│   └── advanced_damped_oscillator/
+└── .github/workflows/tests.yml

@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "physics-informed-ai"
-version = "0.1.0"
-description = "A reproducible comparison of data-driven neural networks and physics-informed neural networks for a harmonic oscillator."
+version = "1.0.0"
+description = "Reproducible comparisons of data-driven and physics-informed neural networks for harmonic oscillators."
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
@@ -18,6 +18,9 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0", "ruff>=0.5"]
+
+[project.urls]
+Homepage = "https://github.com/Taibi1234/physics-informed-ai-lab"
 
 [tool.setuptools.packages.find]
 where = ["src"]
